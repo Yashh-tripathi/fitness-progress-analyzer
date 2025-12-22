@@ -45,4 +45,16 @@ export const getDailyLogs = asyncHandler(async (req, res) => {
     );
   });
 
-  
+export const getLatestLog = asyncHandler(async (req,res) => {
+    const log = await DailyLog.findOne({ user: req.user._id })
+        .sort({ date: -1 });
+
+    if (!log) {
+        throw new ApiError(404, "No logs found");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, log, "Latest log fetched")
+    );
+});
+
