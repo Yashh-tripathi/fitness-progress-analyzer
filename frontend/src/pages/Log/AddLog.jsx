@@ -1,9 +1,8 @@
 import { useState } from "react";
 import MainLayout from "../../components/Layout/MainLayout";
-import { useFitness } from "../../context/FitnessContext";
-
+// import { useFitness } from "../../context/FitnessContext";
+import { addDailyLog } from "../../api/log.api.js";
 const AddLog = () => {
-  const {addLog} = useFitness();
   const [formData, setFormData] = useState({
     date: "",
     weight: "",
@@ -11,87 +10,106 @@ const AddLog = () => {
     workoutMinutes: ""
   });
 
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addLog({
-      ...formData,
-      date: new Date(formData.date),
-    });
+    setLoading(true);
+    setMessage("");
 
-    alert("Log added successfully!");
+    try {
+      const res = await addDailyLog({
+        ...formData,
+        weight: Number(formData.weight),
+        calories: Number(formData.calories),
+        workoutMinutes: Number(formData.workoutMinutes)
+      });
+
+      setMessage("Log added successfully");
+      setFormData({
+        date: "",
+        weight: "",
+        calories: "",
+        workoutMinutes: ""
+      });
+    } catch (error) {
+      setMessage(
+        error.response?.data?.message || "Failed to add log"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <MainLayout>
-      <div className="max-w-4xl bg-white p-10 rounded-md ">
-        <h1 className="text-2xl font-bold mb-2">Add Daily Log</h1>
-        <p className="text-gray-500 mb-8">
-          Track your daily fitness progress
-        </p>
+    <div className="bg-white p-6 rounded-xl shadow-md max-w-md">
+      <h2 className="text-xl font-semibold mb-4">Add Daily Log</h2>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {message && (
+        <p className="mb-3 text-sm text-center">{message}</p>
+      )}
 
-          <div>
-            <label className="text-sm font-bold text-gray-600">Date</label>
-            <input
-              type="date"
-              name="date"
-              onChange={handleChange}
-              className="w-full border p-3 rounded-lg mt-1"
-              required
-            />
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <input
+          type="date"
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded"
+        />
 
-          <div>
-            <label className="text-sm font-bold text-gray-600">Weight (kg)</label>
-            <input
-              type="number"
-              name="weight"
-              placeholder="Eg: 78"
-              onChange={handleChange}
-              className="w-full border p-3 rounded-lg mt-1"
-              required
-            />
-          </div>
+        <input
+          type="number"
+          name="weight"
+          placeholder="Weight (kg)"
+          value={formData.weight}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded"
+        />
 
-          <div>
-            <label className="text-sm font-bold  text-gray-600">Calories Intake</label>
-            <input
-              type="number"
-              name="calories"
-              placeholder="Eg: 2300"
-              onChange={handleChange}
-              className="w-full border p-3 rounded-lg mt-1"
-              required
-            />
-          </div>
+        <input
+          type="number"
+          name="calories"
+          placeholder="Calories"
+          value={formData.calories}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded"
+        />
 
-          <div>
-            <label className="text-sm font-bold text-gray-600">Workout Minutes</label>
-            <input
-              type="number"
-              name="workoutMinutes"
-              placeholder="Eg: 45"
-              onChange={handleChange}
-              className="w-full border p-3 rounded-lg mt-1"
-              required
-            />
-          </div>
+        <input
+          type="number"
+          name="workoutMinutes"
+          placeholder="Workout Minutes"
+          value={formData.workoutMinutes}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border rounded"
+        />
 
-          <div className="md:col-span-2 mt-4">
-            <button className="bg-black opacity-50 cursor-pointer hover:border-5  hover:border-gray-300 text-white px-8 py-3 rounded-lg hover:opacity-90 transition-all duration-300">
-              Save Log
-            </button>
-          </div>
-
-        </form>
-      </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800"
+        >
+          {loading ? "Saving..." : "Add Log"}
+        </button>
+      </form>
+    </div>
     </MainLayout>
   );
 };
 
 export default AddLog;
+
