@@ -5,14 +5,29 @@ import MainLayout from "../../components/Layout/MainLayout.jsx";
 import StatCard from "./StatCard.jsx";
 import { useFitness } from "../../context/FitnessContext.jsx";
 import FitnessCharts from "../../components/Charts/FitnessCharts.jsx";
+import { useEffect, useState } from "react";
+import { fetchAllLogs, fetchLatestLog } from "../../api/log.api.js";
 
 const Dashboard = () => {
+  const [logs, setLogs] = useState([])
+  const [latestlog, setLatestLog] = useState("");
 
-    const {logs} = useFitness();
+    // const {logs} = useFitness();
 
-    const latestLogs = logs.length > 0 ? logs[logs.length - 1] : null;
+    // const latestLogs = logs.length > 0 ? logs[logs.length - 1] : null;
+    // console.log(latestLogs)
 
-    console.log(latestLogs)
+    useEffect(() => {
+
+      fetchAllLogs().then(res => {
+        setLogs(res.data)
+      })
+
+
+      fetchLatestLog().then(res => {
+        setLatestLog(res.data)
+      })
+    }, [])
     const avgCalories = logs.reduce((sum, l) => sum + Number(l.calories), 0) / (logs.length || 1);
 
     const avgWorkout = logs.reduce((sum, l) => sum + Number(l.workoutMinutes), 0) / (logs.length || 1);
@@ -22,7 +37,7 @@ const Dashboard = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <StatCard title="Current Weight" value={latestLogs ? `${latestLogs.weight} kg` : "--"} />
+        <StatCard title="Current Weight" value={latestlog ? `${latestlog.weight} kg` : "--"} />
         <StatCard title="Avg Calories" value={logs.length ? `${Math.round(avgCalories)} kcal` : "--"} />
         <StatCard title="Avg Workout" value={logs.length ? `${Math.round(avgWorkout)} min/day` : "--"} />
 
@@ -30,9 +45,9 @@ const Dashboard = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-        <WeightChart />
+        <WeightChart logs={logs} />
         
-        <CaloriesChart />
+        <CaloriesChart logs={logs} />
       </div>
 
       {/* Prediction */}

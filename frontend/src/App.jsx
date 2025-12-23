@@ -30,7 +30,7 @@ function App() {
         <Route path='/add-log' element={isAuthenticated ? <AddLog/> : <Navigate to="/login"/>} />
         <Route
           path="/logs"
-          element={isAuthenticated ? <LogsHistory /> : <Navigate to="/login" />}
+          element={isAuthenticated ? <LogsHistory  /> : <Navigate to="/login" />}
         />
         <Route
           path="/profile"
