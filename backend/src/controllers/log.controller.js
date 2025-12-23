@@ -58,3 +58,46 @@ export const getLatestLog = asyncHandler(async (req,res) => {
     );
 });
 
+export const updateDailyLog = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const {weight, calories, workoutMinutes} = req.body;
+
+    const log = await DailyLog.findOne({
+        _id: id,
+        user: req.user._id
+    });
+
+    if(!log){
+        throw new ApiError(404, "No logs found");
+    }
+
+    if(weight.length !== undefined) log.weight = weight;
+    if(calories.length !== undefined) log.calories = calories;
+    if(workoutMinutes !== undefined) log.workoutMinutes = workoutMinutes;
+
+    await log.save();
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, log, "Log updated")
+    )
+});
+
+export const deleteLog = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const log = await DailyLog.findOneAndDelete({
+        _id: id,
+        user: req.user._id,
+    });
+
+    if(!log){
+        throw new ApiError(404, "Log not found")
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, {}, "Log Deleted")
+    )
+});
