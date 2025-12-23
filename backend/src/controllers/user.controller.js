@@ -219,3 +219,33 @@ export const changeCurrentPassword = asyncHandler(async (req, res) => {
         )
     )
 });
+
+
+export const getCurrentUser = asyncHandler(async (req,res) => {
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, req.user, "User profile")
+    )
+});
+
+export const updateProfile = asyncHandler(async (req, res) => {
+    const {height, age, gender, goal} = req.body;
+    const user = await User.findOne(req.user?._id);
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+
+    if(height !== undefined) user.height = height;
+    if(age !== undefined) user.age = age;
+    if(gender !== undefined) user.gender = gender;
+    if(goal !== undefined) user.goal = goal;
+
+    await user.save({ validateBeforeSave: false });
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, user, "User profile updated")
+    )
+});

@@ -10,4 +10,8 @@ const loginUser = async (data) => {
     return response.data;
 }
 
-export default {loginUser, registerUser} 
+const logoutUser = async () => {
+    await api.post("/auth/logout");
+}
+
+export default {loginUser, registerUser, logoutUser} 
