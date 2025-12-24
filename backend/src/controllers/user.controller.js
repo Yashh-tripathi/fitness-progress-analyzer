@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt"
 
 
 const generateAccessRefreshToken = async (userId) => {
@@ -63,19 +64,20 @@ export const registerUser = asyncHandler(async (req, res) => {
 export const loginUser = asyncHandler(async (req, res) => {
     const {username, email, password} = req.body;
 
-    if(!(username || email || password)){
+    if((!username && !email) || !password){
         throw new ApiError(400, "All fields are required")
     }
 
     const user = await User.findOne({
-        $or: [{username}, {email}]
+        username,
+        email
     }).select("+password")
 
     if(!user){
         throw new ApiError(404, "User does not exits")
     }
 
-    const isPasswordValid = await user.isPasswordCorrect(password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if(!isPasswordValid){
         throw new ApiError(400, "Password incorrect")

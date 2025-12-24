@@ -80,21 +80,33 @@ const Profile = () => {
           onChange={(v) => setFormData({ ...formData, height: v })}
         />
 
-        <label>Gender</label>
-        <select name="gender" value={formData.gender || ""} onChange={(v) => setFormData({ ...formData, gender: v }) }className="border w-full mb-3 p-2">
-          <option value="">Select</option>
-          <option>Male</option>
-          <option>Female</option>
-          <option>Other</option>
-        </select>
+<label>Gender</label>
+<select
+  value={formData.gender || ""}
+  onChange={(e) =>
+    setFormData({ ...formData, gender: e.target.value })
+  }
+  className="border w-full mb-3 p-2"
+>
+  <option value="">Select</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Other">Other</option>
+</select>
 
-        <label>Goal</label>
-        <select name="goal" value={formData.goal || ""} onChange={(v) => setFormData({ ...formData, goal: v })} className="border w-full mb-4 p-2">
-          <option value="">Select</option>
-          <option>Lose Weight</option>
-          <option>Maintain</option>
-          <option>Gain Muscle</option>
-        </select>
+<label>Goal</label>
+<select
+  value={formData.goal || ""}
+  onChange={(e) =>
+    setFormData({ ...formData, goal: e.target.value })
+  }
+  className="border w-full mb-4 p-2"
+>
+  <option value="">Select</option>
+  <option value="Lose Weight">Lose Weight</option>
+  <option value="Maintain">Maintain</option>
+  <option value="Gain Muscle">Gain Muscle</option>
+</select>
 
         <button
           disabled={loading}

@@ -30,9 +30,9 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex ">
-      <div className="w-[25%] h-full ">
-        <form onSubmit={handleSubmit} className="p-10">
+    <div className="min-h-screen flex flex-col-reverse sm:flex-row">
+      <div className="sm:w-[25%] h-full flex flex-col">
+        <form onSubmit={handleSubmit} className="p-10 flex flex-col">
           <h2 className="font-bold text-3xl pt-20">Log in to your account</h2>
 
           <p className="font-semibold mb-10">
@@ -69,13 +69,13 @@ const Login = () => {
             required
           />
 
-          <button className="mt-10 border-2 cursor-pointer px-4 rounded-md py-1 font-semibold hover:bg-black hover:text-white transition-all duration-300">
+          <button className="mt-10 border-2 cursor-pointer px-4 rounded-md py-1 font-semibold hover:bg-black hover:text-white transition-all duration-300 w-37.5">
             Login
           </button>
         </form>
       </div>
 
-      <div className="w-[75%]">
+      <div className="sm:w-[75%]  ">
         <img src="fit-man.jpg" alt="" className="h-full w-full object-cover" />
       </div>
     </div>

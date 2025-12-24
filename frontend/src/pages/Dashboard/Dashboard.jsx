@@ -7,8 +7,13 @@ import { useFitness } from "../../context/FitnessContext.jsx";
 import FitnessCharts from "../../components/Charts/FitnessCharts.jsx";
 import { useEffect, useState } from "react";
 import { fetchAllLogs, fetchLatestLog } from "../../api/log.api.js";
+import { fetchPrediction } from "../../api/ml.api.js";
+import PredictionResult from "../../components/Prediction/PredictionResult.jsx";
 
 const Dashboard = () => {
+  const [prediction, setPrediction] = useState(null);
+  const [loadingPrediction, setLoadingPrediction] = useState(false);
+
   const [logs, setLogs] = useState([])
   const [latestlog, setLatestLog] = useState("");
 
@@ -16,6 +21,22 @@ const Dashboard = () => {
 
     // const latestLogs = logs.length > 0 ? logs[logs.length - 1] : null;
     // console.log(latestLogs)
+
+    useEffect(() => {
+      setLoadingPrediction(true);
+    
+      fetchPrediction()
+        .then((res) => {
+          setPrediction(res.data);
+        })
+        .catch(() => {
+          setPrediction(null);
+        })
+        .finally(() => {
+          setLoadingPrediction(false);
+        });
+    }, []);
+    
 
     useEffect(() => {
 
@@ -50,8 +71,14 @@ const Dashboard = () => {
         <CaloriesChart logs={logs} />
       </div>
 
+
+
       {/* Prediction */}
-      <PredictionCard />
+      {loadingPrediction && (
+        <p className="mt-6 text-gray-500">Analyzing fitness data...</p>
+      )}
+
+      {prediction && <PredictionResult data={prediction} />}
       {logs.length>0 && <FitnessCharts logs={logs} />}
     </MainLayout>
   );
