@@ -79,6 +79,9 @@ const Dashboard = () => {
       )}
 
       {prediction && <PredictionResult data={prediction} />}
+      {prediction && prediction.confidence && (
+  <PredictionCard data={prediction} />
+)}
       {logs.length>0 && <FitnessCharts logs={logs} />}
     </MainLayout>
   );

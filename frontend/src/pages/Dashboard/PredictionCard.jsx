@@ -1,15 +1,25 @@
-const PredictionCard = () => {
+const confidenceStyles = {
+  low: "bg-red-500 w-1/3",
+  medium: "bg-yellow-500 w-2/3",
+  high: "bg-green-500 w-full"
+};
+
+const PredictionCard = ({data}) => {
     return (
-      <div className="bg-black text-white p-8 rounded-xl shadow-md">
-        <h2 className="text-xl font-semibold">30-Day Prediction</h2>
-  
-        <p className="text-3xl font-bold mt-4">
-          75 kg
-        </p>
-  
-        <p className="text-sm text-gray-300 mt-2">
-          Based on your recent calorie intake and workouts.
-        </p>
+      <div className="mt-4">
+        <p className="text-sm font-semibold mb-1">Prediction Confidence</p>
+
+<div className="w-full h-2 bg-gray-200 rounded">
+  <div
+    className={`h-2 rounded transition-all duration-500 ${
+      confidenceStyles[data.confidence] || confidenceStyles.medium
+    }`}
+  ></div>
+</div>
+
+<p className="text-xs mt-1 capitalize text-gray-600">
+  {data.confidence} confidence
+</p>
       </div>
     );
   };
