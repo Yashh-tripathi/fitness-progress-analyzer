@@ -21,14 +21,14 @@ const PredictionResult = ({ data }) => {
           </div>
         </div>
   
-        <div>
+        {/* <div>
           <p className="font-semibold mb-2">Suggestions</p>
           <ul className="list-disc pl-6 text-gray-700">
             {data.suggestions.map((s, i) => (
               <li key={i}>{s}</li>
             ))}
           </ul>
-        </div>
+        </div> */}
       </div>
     );
   };

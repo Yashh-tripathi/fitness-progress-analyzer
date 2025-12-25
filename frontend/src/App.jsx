@@ -1,7 +1,6 @@
 import { Navigate, Route, Router, Routes } from 'react-router-dom'
 import './App.css'
 import Login from './pages/Auth/Login.jsx'
-import Home from './components/Home.jsx'
 import Register from './pages/Auth/Register.jsx'
 import Dashboard from './pages/Dashboard/Dashboard.jsx'
 import AddLog from './pages/Log/AddLog.jsx'

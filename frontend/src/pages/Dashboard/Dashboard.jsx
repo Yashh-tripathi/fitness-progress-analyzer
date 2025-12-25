@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { fetchAllLogs, fetchLatestLog } from "../../api/log.api.js";
 import { fetchPrediction } from "../../api/ml.api.js";
 import PredictionResult from "../../components/Prediction/PredictionResult.jsx";
+import SuggestionsCard from "../../components/Prediction/SuggestionsCard.jsx";
 
 const Dashboard = () => {
   const [prediction, setPrediction] = useState(null);
@@ -52,16 +53,44 @@ const Dashboard = () => {
     const avgCalories = logs.reduce((sum, l) => sum + Number(l.calories), 0) / (logs.length || 1);
 
     const avgWorkout = logs.reduce((sum, l) => sum + Number(l.workoutMinutes), 0) / (logs.length || 1);
+
+    let weightTrend = "--";
+
+    if (prediction && latestlog) {
+      if (prediction.predictedWeight < latestlog.weight) {
+        weightTrend = "↓ Losing";
+      } else if (prediction.predictedWeight > latestlog.weight) {
+        weightTrend = "↑ Gaining";
+      } else {
+        weightTrend = "→ Stable";
+      }
+    }
+
   return (
     <MainLayout>
       <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <StatCard title="Current Weight" value={latestlog ? `${latestlog.weight} kg` : "--"} />
-        <StatCard title="Avg Calories" value={logs.length ? `${Math.round(avgCalories)} kcal` : "--"} />
-        <StatCard title="Avg Workout" value={logs.length ? `${Math.round(avgWorkout)} min/day` : "--"} />
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+      <StatCard
+    title="Current Weight"
+    value={latestlog ? `${latestlog.weight} kg` : "--"}
+  />
 
+  <StatCard
+    title="Avg Calories"
+    value={logs.length ? `${Math.round(avgCalories)} kcal` : "--"}
+  />
+
+  <StatCard
+    title="Avg Workout"
+    value={logs.length ? `${Math.round(avgWorkout)} min/day` : "--"}
+  />
+
+  <StatCard
+    title="Weight Trend"
+    value={weightTrend}
+  />
       </div>
 
       {/* Charts */}
@@ -78,7 +107,13 @@ const Dashboard = () => {
         <p className="mt-6 text-gray-500">Analyzing fitness data...</p>
       )}
 
-      {prediction && <PredictionResult data={prediction} />}
+{prediction && (
+  <>
+    <PredictionResult data={prediction} />
+    <SuggestionsCard suggestions={prediction.suggestions} />
+  </>
+)}
+
       {prediction && prediction.confidence && (
   <PredictionCard data={prediction} />
 )}
