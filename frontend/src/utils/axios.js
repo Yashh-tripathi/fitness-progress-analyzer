@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://fitness-progress-backend.onrender.com" ||"http://localhost:4000/api/v1",
+    baseURL: import.meta.env.VITE_API_URL,
     withCredentials: true
 });
 
